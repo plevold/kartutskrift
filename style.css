@@ -1,0 +1,90 @@
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #FAFAFA;
+        font: 12pt "Tahoma";
+    }
+	
+	.vline {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 1;
+		border-left: rgba(0,0,255,.4) solid 1px;
+		width: 1px;
+		}
+		
+				.vlineThick {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 1;
+		border-left: rgba(0,0,255,.4) solid 1.5px;
+		width: 1px;
+		}
+		
+		.hline {
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 1;
+		border-top: rgba(0,0,255,.4) solid 1px;
+		height: 1px;
+		}
+	
+	.xPosTop {
+		position: absolute;
+		top: 10mm;
+		z-index: 2;
+		font-size:10pt;
+	}
+	
+	.xPosBottom {
+		position: absolute;
+		bottom: 5mm;
+		z-index: 2;
+		font-size:10pt;
+	}
+	
+		.yPosLeft {
+		position: absolute;
+		left: 5mm;
+		z-index: 2;
+		font-size:10pt;
+	}
+	
+	.yPosRight {
+		position: absolute;
+		right: 5mm;
+		z-index: 2;
+		font-size:10pt;
+	}
+	#Copyright {position: absolute;
+	bottom: 0;
+	right: 0;
+	z-index: 3;
+	font-size: 8pt;}
+	
+	#UTM{
+	position: absolute;
+top: 12mm;
+left: 12mm;
+z-index: 4;
+font-weight: 200;
+	}
+	
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    @media print {
+        .page {
+            margin: 0;
+            border: initial;
+            border-radius: initial;
+            width: initial;
+            min-height: initial;
+            box-shadow: initial;
+            background: initial;
+        }
+    }

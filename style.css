@@ -19,8 +19,8 @@
 		top: 0;
 		bottom: 0;
 		z-index: 1;
-		border-left: rgba(0,0,255,.4) solid 1.5px;
-		width: 1px;
+		border-left: rgba(0,0,255,.6) solid 1.5px;
+		width: 0px;
 		}
 		
 		.hline {
@@ -29,7 +29,16 @@
 		right: 0;
 		z-index: 1;
 		border-top: rgba(0,0,255,.4) solid 1px;
-		height: 1px;
+		height: 0px;
+		}
+		
+		.hlineThick {
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 1;
+		border-top: rgba(0,0,255,.6) solid 1.5px;
+		height: 0px;
 		}
 	
 	.xPosTop {
@@ -48,14 +57,12 @@
 	
 		.yPosLeft {
 		position: absolute;
-		left: 5mm;
 		z-index: 2;
 		font-size:10pt;
 	}
 	
 	.yPosRight {
 		position: absolute;
-		right: 5mm;
 		z-index: 2;
 		font-size:10pt;
 	}
@@ -74,7 +81,7 @@ font-weight: 200;
 	}
 	
     @page {
-        size: A4;
+        size: A3 landscape;
         margin: 0;
     }
     @media print {

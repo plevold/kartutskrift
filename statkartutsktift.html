@@ -39,13 +39,24 @@
     return query_string;
 } ();
 		$().ready(function(){
-			var UTM = 33
-			var zoom = 13
+			var UTM = 33;
+			if (QueryString['UTM'] != undefined) {
+				UTM = parseInt(QueryString['UTM']);
+			}
+			var zoom = 13;
+			if (QueryString['zoom'] != undefined) {
+				zoom = parseInt(QueryString['zoom']);
+			}
 			var papertype = "A3Landscape"
 			var resolution = 50000.;
 			var xLUtmPrint = 227000;
+			if (QueryString['x'] != undefined) {
+				xLUtmPrint = parseFloat(QueryString['x']);
+			}
 			var yHUtmPrint = 7044000;
-			
+			if (QueryString['y'] != undefined) {
+				yHUtmPrint = parseFloat(QueryString['y']);
+			}
 			var xLUtmWms = 0;
 			var yLUtmWms = 0;
 			var xHUtmWms = 0;

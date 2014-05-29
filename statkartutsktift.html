@@ -48,6 +48,9 @@
 				zoom = parseInt(QueryString['zoom']);
 			}
 			var papertype = "A3Landscape"
+			if (QueryString['paper'] != undefined) {
+				papertype = QueryString['paper'];
+			}
 			var resolution = 50000.;
 			var xLUtmPrint = 227000;
 			if (QueryString['x'] != undefined) {
@@ -57,6 +60,12 @@
 			if (QueryString['y'] != undefined) {
 				yHUtmPrint = parseFloat(QueryString['y']);
 			}
+			
+			var map = "toporaster2";
+			if (QueryString['map'] != undefined) {
+				map = QueryString['map'];
+			}
+			
 			var xLUtmWms = 0;
 			var yLUtmWms = 0;
 			var xHUtmWms = 0;
@@ -96,20 +105,41 @@
 			var xLUTM = xLUtmPrint-(xLUtmPrint-xLUtmWms) % dxUTM;
 			var yHUTM = yHUtmPrint+dyUTM-(yHUtmPrint-yLUtmWms) % dyUTM;
 			
+			var cssPagedMedia = (function () {
+			var style = document.createElement('style');
+			document.head.appendChild(style);
+			return function (rule) {
+				style.innerHTML = rule;
+			};
+			}());
+
+			cssPagedMedia.size = function (size) {
+			cssPagedMedia('@page {size: ' + size + '}');
+			};
 			var paperWidth = .210;
 			var paperHeight = .297;
-			if (papertype == "A4"){
+			if (papertype == "A4") {
 				paperWidth = .210;
 				paperHeight = .297;
-			} else if (papertype == "A3") {
-				paperWidth = .297;
-				paperHeight = .420;
+				cssPagedMedia.size('A4');
 			} else if (papertype == "A3Landscape") {
 				paperWidth = .420;
 				paperHeight = .297;
+				cssPagedMedia.size('A3 landscape');
+			} if (papertype == "A4Landscape"){
+				paperWidth = .297;
+				paperHeight = .210;
+				cssPagedMedia.size('A4 landscape');
+			} else {
+				paperWidth = .297;
+				paperHeight = .420;
+				cssPagedMedia.size('A3');
 			}
 			$("#paper")[0].style.width=(paperWidth*1000)+"mm";
 			$("#paper")[0].style.height=(paperHeight*1000)+"mm";
+
+			
+			
 						
 			
 			var yOffsetMM = (yHUtmPrint-yHUTM)/resolution*1000;
@@ -126,7 +156,7 @@
 					div.appendChild(img)
 					var xL = xLUTM+dxUTM*i;
 					var yL = yHUTM-dyUTM*j;
-					img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS=toporaster2&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH=256&HEIGHT=256&FORMAT=image/png";
+					img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS="+map+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH=256&HEIGHT=256&FORMAT=image/png";
 					img.style.width = imgWitdhMM+"mm";
 					img.style.height = imgHeighthMM+"mm";
 					img.style.position ="absolute";
@@ -185,7 +215,7 @@
 				var div = document.createElement("div");
 				div.innerText = yUTMPos/1000;
 				div.style.top=(0-y/resolution)*1000+"mm";
-				div.style.left = (paperWidth*1000-10-xOffsetMM)+"mm"
+				div.style.left = (paperWidth*1000-15-xOffsetMM)+"mm"
 				div.className="yPosRight";
 				$("#container").append(div);
 			}

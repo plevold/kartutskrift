@@ -72,6 +72,9 @@
 	z-index: 3;
 	font-size: 8pt;}
 	
+	#map { height: 500px;
+		width: 500px;}
+	
 	#UTM{
 	position: absolute;
 top: 12mm;

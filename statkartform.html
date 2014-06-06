@@ -8,7 +8,7 @@
     </head>
     <body>
 <form method="get" action="statkartutsktift.html">
-    UTM: <select name="UTM">
+    UTM: <select oninput="updateUTM()" id="selectUTM" name="UTM">
         <option value="32">32</option>
         <option value="33">33</option>
         <option value="34">34</option>
@@ -33,26 +33,17 @@
     </form>
 <br/>
 Siden er lagd for chrome, det anbefales og lagre til pdf først og så skrive ut pdf. Husk å velg "crop to size" eller noe sånt (slik at du får rett skala) når du skriver ut.
-<div id="map" style="width:500px;height:500px;top:300px;left:50px;position:absolute;">
-    <div id="box" style="position:absolute;top:240px;bottom:240px;left:240px;right:240px;border: 1px black solid;z-index: 800;pointer-events:none;"></div>
+<div id="mapcontainer" style="width:90%;height:70%;top:300px;left:5%;position:absolute;">
+<div id="box" style="position:absolute;top:240px;bottom:240px;left:240px;right:240px;border: 1px black solid;z-index: 800;pointer-events:none;"></div>
 </div>
 <script>
 
-var map = new OpenLayers.Map('map');
-map.projection = "EPSG:32633";
-map.displayProjection = new OpenLayers.Projection(map.projection);
-map.maxExtent = new OpenLayers.Bounds(-2500000, 3500000, 3045984, 9045984);
-//map.resolutions = [1800,900,450,225,120,50,25,10,4.5,3,2,1,0.5];
-map.tileSize = new OpenLayers.Size(256, 256);
-var ign = new OpenLayers.Layer.WMS( "Topo2",
-                                   "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'toporaster2'} );
-map.addLayer(ign);
-
+var map = null;
 var resolution = 50000;
 var paperWidth = .420;
 var paperHeight = .297;
-var mapHeight = 500;
-var mapWitdth = 500;
+var mapHeight = $("#mapcontainer").height();
+var mapWitdth = $("#mapcontainer").width();
 
 function changePaper(paper) {
     if (paper == "A3Landscape"){
@@ -69,6 +60,7 @@ function changePaper(paper) {
         paperHeight = .297;
     }
     updateSquare();
+	
 }
 
 
@@ -106,10 +98,47 @@ function updateLocation(){
                                      $("#north")[0].value = loc.lat;
 }
 
-                                   map.zoomToMaxExtent();
+function addMap(){
+var div = document.createElement("div");
+div.id = "mapPreview";
+$("#mapcontainer").append(div);
+var utm = $("#selectUTM")[0].value;
+map = new OpenLayers.Map('mapPreview');
+map.projection = "EPSG:326"+utm;
+map.displayProjection = new OpenLayers.Projection(map.projection);
+if (utm == 32){
+	map.maxExtent = new OpenLayers.Bounds(-2000000,	3500000,	3545984,	9045984);
+} else if (utm ==33 ){
+	map.maxExtent = new OpenLayers.Bounds(-2500000,	3500000,	3045984,	9045984);
+} else if (utm ==34 ){
+	map.maxExtent = new OpenLayers.Bounds(-3000000,	3500000,	2545984,	9045984);
+} else if (utm ==35 ){
+	map.maxExtent = new OpenLayers.Bounds(-3500000,	3500000,	2045984,	9045984);
+} else if (utm ==36 ){
+	map.maxExtent = new OpenLayers.Bounds(-4000000,	3500000,	1545984,	9045984);
+}
+//map.resolutions = [1800,900,450,225,120,50,25,10,4.5,3,2,1,0.5];
+map.tileSize = new OpenLayers.Size(256, 256);
+var ign = new OpenLayers.Layer.WMS( "Topo2",
+                                   "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'toporaster2'} );
+								 
+map.addLayer(ign);
+                               map.zoomToMaxExtent();
                                    map.events.register("zoomend",null,updateSquare);
                                    map.events.register("move",null,updateLocation);
                                    updateSquare();
+}
+addMap();
+
+function updateUTM(){
+$("#mapPreview").remove();
+addMap();
+}
+
+
+
+
+    
 </script>
 
 <script>

@@ -3,22 +3,29 @@
     <head>
         <script src="jquery-2.1.1.js"></script>
         <script src="statkart.js"></script>
-        <link rel="stylesheet" type="text/css" href="style.css">
-		 <script src="http://openlayers.org/api/OpenLayers.js"></script>
+        <script type="text/javascript" src="http://svn.osgeo.org/metacrs/proj4js/trunk/lib/proj4js.js"></script>
+       <script src="http://openlayers.org/api/OpenLayers.js"></script>
+       <link rel="stylesheet" type="text/css" href="style.css">
+        <title>Statkart print</title>
     </head>
     <body>
 <form method="get" action="statkartutsktift.html">
-    UTM: <select oninput="updateUTM()" id="selectUTM" name="UTM">
+    UTM: <select oninput="updateUTM()" id="selectUTM">
+        <option value="auto">auto</option>
         <option value="32">32</option>
         <option value="33">33</option>
         <option value="34">34</option>
         <option value="35">35</option>
         <option value="36">36</option>
-        </select><br/>
+        </select><br/><input type="hidden" id="UTM" name="UTM" value="32"/>
+    <div id='coordinates' style="visibility: hidden;">
     Øst koordinat <input type="number" id="east" name="x"  step="any" value=557000></input></br>
     Nord koordinat <input type="number" id="north" name="y"  step="any"     value=7037000></input></br>
-    Skala 1:<input type="number" name="resolution" step="any" value=50000></input></br>
-    Zoom (oppløsning, høyere gir bedre oppløsning, kun heltall): <input type="number" name="zoom" step=1 value=13></input><br/>
+    </div>
+    <div id ='scale' style="visibility: hidden;">
+    Skala 1:<input type="number" name="resolution" step="any" value=50000></input></br></div>
+    <div id='zoom'  style="visibility: hidden;">
+    Zoom (oppløsning, høyere gir bedre oppløsning, kun heltall): <input type="number" name="zoom" step=1 value=13></input><br/></div>
     Kart <select name="map">
         <option value="toporaster2">Topografisk</option>
         <option value="sjo_hovedkart2">Sjøkart</option>
@@ -37,8 +44,19 @@ Siden er lagd for chrome, det anbefales og lagre til pdf først og så skrive ut
 <div id="box" style="position:absolute;top:240px;bottom:240px;left:240px;right:240px;border: 1px black solid;z-index: 800;pointer-events:none;"></div>
 </div>
 <script>
-
+    
+    Proj4js.defs["EPSG:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+    Proj4js.defs["EPSG:32633"] = "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+    Proj4js.defs["EPSG:32634"] = "+proj=utm +zone=34 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+    Proj4js.defs["EPSG:32635"] = "+proj=utm +zone=35 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+    Proj4js.defs["EPSG:32636"] = "+proj=utm +zone=36 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+    Proj4js.defs["EPSG:4326"]   = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+    
 var map = null;
+var utm = null;
+var projection = null;
+var projectionWGS84 = new OpenLayers.Projection("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+
 var resolution = 50000;
 var paperWidth = .420;
 var paperHeight = .297;
@@ -63,9 +81,13 @@ function changePaper(paper) {
 	
 }
 
+function getCenterPosition(){
+    return map.getLonLatFromPixel(new OpenLayers.Pixel(mapWitdth/2,mapHeight/2));
+}
+
 
 function updateSquare(){
-    var center = map.getLonLatFromPixel(new OpenLayers.Pixel(mapWitdth/2,mapHeight/2));
+    var center =getCenterPosition();
     var dx = paperWidth/2*resolution;
     var left = center.lon-dx;
     var right = center.lon+dx;
@@ -95,17 +117,53 @@ function updateLocation(){
     var x = parseInt(box.style.left);
     var loc = map.getLonLatFromPixel(new OpenLayers.Pixel(x,y));
     $("#east")[0].value = loc.lon;
-                                     $("#north")[0].value = loc.lat;
+    $("#north")[0].value = loc.lat;
+    var newUTM = getBestUtm();
+    if (newUTM != utm)
+    {
+        updateUTM();
+    }
+}
+
+function getUtm(){
+    return $("#UTM")[0].value;
+}
+
+function getProjection(utm){
+    map.projection = "EPSG:326"+utm;
+    return new OpenLayers.Projection(map.projection)
+    
+}
+
+function getBestUtm(){
+    if ($('#selectUTM')[0].value != "auto"){
+        return $('#selectUTM')[0].value;
+    }
+    return 32;
+    center = getCenterPosition();
+    center = center.transform(projection,projectionWGS84);
+    
+    if (center.lon < 12){
+        return 32;
+    } else if (center.lon < 18){
+        return 33;
+    } else if (center.lon < 24){
+        return 34;
+    } else if (center.lon < 30){
+        return 35;
+    } else {
+        return 36;
+    }
 }
 
 function addMap(){
 var div = document.createElement("div");
 div.id = "mapPreview";
 $("#mapcontainer").append(div);
-var utm = $("#selectUTM")[0].value;
 map = new OpenLayers.Map('mapPreview');
-map.projection = "EPSG:326"+utm;
-map.displayProjection = new OpenLayers.Projection(map.projection);
+var utm = getUtm();
+projection = getProjection(utm);
+map.displayProjection = projection;
 if (utm == 32){
 	map.maxExtent = new OpenLayers.Bounds(-2000000,	3500000,	3545984,	9045984);
 } else if (utm ==33 ){
@@ -120,7 +178,7 @@ if (utm == 32){
 //map.resolutions = [1800,900,450,225,120,50,25,10,4.5,3,2,1,0.5];
 map.tileSize = new OpenLayers.Size(256, 256);
 var ign = new OpenLayers.Layer.WMS( "Topo2",
-                                   "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'toporaster2'} );
+                                   "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'toporaster2'},{attribution:"&copy; <a href='http://www.statkart.no/'>Kartverket</a>"} );
 								 
 map.addLayer(ign);
                                map.zoomToMaxExtent();
@@ -131,17 +189,17 @@ map.addLayer(ign);
 addMap();
 
 function updateUTM(){
-$("#mapPreview").remove();
-addMap();
+    utm = getBestUtm();
+    $("#UTM")[0].value = utm;
+    newProjection = getProjection(utm);
+    var center = getCenterPosition();
+    var zoom = map.getZoom();
+    center = center.transform(projection,newProjection);
+    $("#mapPreview").remove();
+    addMap();
+    map.setCenter(center,zoom,true,true);
 }
 
-
-
-
-    
-</script>
-
-<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

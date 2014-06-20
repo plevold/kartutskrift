@@ -133,7 +133,12 @@
 				paperWidth = .297;
 				paperHeight = .210;
 				cssPagedMedia.size('A4 landscape');
-			} else {
+			}
+                  else if (papertype == "custom" && QueryString['paperWidth'] != undefined && QueryString['paperHeight'] != undefined) {
+                  paperWidth = QueryString['paperWidth'];
+                  paperHeight = QueryString['paperHeight'];
+                  cssPagedMedia.size(paperWidth*1000 + ' mm '+ paperHeight*1000 + ' mm');
+                  }else {
 				paperWidth = .297;
 				paperHeight = .420;
 				cssPagedMedia.size('A3');

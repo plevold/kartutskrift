@@ -201,23 +201,18 @@
                   
 			for (var x = 1000 -(xLUTM % 1000); x < paperWidth*resolution+dxUTM; x+= 1000){
 				var xUTMPos = x+xLUTM;
-				var div = document.createElement("div");
-				div.style.left=(0+x/resolution)*1000+"mm";
                   var pxX = x*m2pxGrid;
                   gridCanvasCtx.beginPath();
                   gridCanvasCtx.moveTo(pxX,0);
                   gridCanvasCtx.lineTo(pxX,gridCanvasHeight);
                   
 				if ((xUTMPos % 5000)>0){
-					div.className="vline";
                   gridCanvasCtx.lineWidth = 1;
 				} else {
-					div.className="vlineThick";
                     gridCanvasCtx.lineWidth = 2;
 				}
                   gridCanvasCtx.strokeStyle = '#0000ff';
                   gridCanvasCtx.stroke();
-				//$("#container").append(div);
 				
                   var div = document.createElement("div");
 				div.innerText = xUTMPos/1000;
@@ -235,24 +230,18 @@
 			
 			for (var y = -((yHUTM) % 1000); -y < paperHeight*resolution+dyUTM; y-= 1000){
 				var yUTMPos = yHUTM +y;
-				var div = document.createElement("div");
-				div.style.top=(0-y/resolution)*1000+"mm";
-				div.className="hline";
                   var pxY = -y*m2pxGrid;
                   gridCanvasCtx.beginPath();
                   gridCanvasCtx.moveTo(0,pxY);
                   gridCanvasCtx.lineTo(gridCanvasWidth,pxY);
                   
 				if ((yUTMPos % 5000)>0){
-					div.className="hline";
                   gridCanvasCtx.lineWidth = 1;
 				} else {
-					div.className="hlineThick";
                   gridCanvasCtx.lineWidth = 2;
 				}
                   gridCanvasCtx.strokeStyle = '#0000ff';
                   gridCanvasCtx.stroke();
-				//$("#container").append(div);
 				
 				var div = document.createElement("div");
 				div.innerText = yUTMPos/1000;

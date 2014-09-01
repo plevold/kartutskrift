@@ -165,8 +165,8 @@
                   var imgWidthPx = 256;
                   var pxPerM = imgWidthPx/dxUTM;
                   
-            var nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000);
-                  var nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000)+1;
+            var nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000)+1;
+            var nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000)+1;
 			for (var i = 0; i < nImgHorizontal; i++) {
 				for (var j = 0; j < nImgVertical; j++) {
 					var img = document.createElement("img");
@@ -188,12 +188,13 @@
 			}
                   var m2pxGrid = 10000/resolution;
                   var gridCanvas = document.getElementById("gridCanvas");
-                  var gridCanvasHeight = nImgHorizontal*dyUTM*m2pxGrid;
+                  var gridCanvasHeight = nImgVertical*dyUTM*m2pxGrid;
                   var gridCanvasWidth =  nImgHorizontal*dxUTM*m2pxGrid;
                   gridCanvas.height = gridCanvasHeight;
                  gridCanvas.width = gridCanvasWidth;
                   var scale = 3.779528/(resolution*m2pxGrid*.001) // displayPx/canvasPx
                 gridCanvas.style.transform = "scale("+scale+","+scale+")";
+				gridCanvas.style.cssText = "-webkit-transform: scale("+scale+","+scale+");"
                 var gridCanvasWrapper =document.getElementById("gridCanvasWrapper");
                   gridCanvasWrapper.style.top = (-gridCanvasHeight*(1-scale)*.5)+"px";
                   gridCanvasWrapper.style.left = (-gridCanvasWidth*(1-scale)*.5)+"px";

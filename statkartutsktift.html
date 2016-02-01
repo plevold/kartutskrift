@@ -42,18 +42,32 @@
   } 
     return query_string;
 } ();
+var maxImgLoading = 5;
+var imgLoading = 0;
+var nImgHorizontal;
+var drawCol;
+var iCol;
+   var doneOneImg = function(){
+	imgLoading--;
+	drawCol();
+}
+	
 		$().ready(function(){
 			var UTM = 32;
 			if (QueryString['UTM'] != undefined) {
 				UTM = parseInt(QueryString['UTM']);
 			}
-			var zoom = 13;
+			var zoom = 12;
 			if (QueryString['zoom'] != undefined) {
 				zoom = parseInt(QueryString['zoom']);
 			}
-			var papertype = "A3Landscape"
+			var papertype = "A3Landscape";
 			if (QueryString['paper'] != undefined) {
 				papertype = QueryString['paper'];
+			}
+			var shadow = 0;
+			if (QueryString['shadow'] != undefined) {
+				shadow = 1;
 			}
 			var resolution = 50000.;
                   if (QueryString['resolution'] != undefined) {
@@ -165,27 +179,10 @@
                   var imgWidthPx = 256;
                   var pxPerM = imgWidthPx/dxUTM;
                   
-            var nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000)+1;
-            var nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000)+1;
-			for (var i = 0; i < nImgHorizontal; i++) {
-				for (var j = 0; j < nImgVertical; j++) {
-					var img = document.createElement("img");
-					var div = document.createElement("div");
-					div.appendChild(img)
-					var xL = xLUTM+dxUTM*i;
-					var yL = yHUTM-dyUTM*j;
-					img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS="+map+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
-					img.style.width = imgWitdhMM+"mm";
-					img.style.height = imgHeighthMM+"mm";
-					img.style.position ="absolute";
-					img.style.top=0;
-					img.style.left=0;
-					div.style.position ="absolute";
-					div.style.top=(0+imgHeighthMM*j)+"mm";
-					div.style.left=(0+imgWitdhMM*i)+"mm";
-					$("#container").append(div);
-				}
-			}
+            nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000)+1;
+            nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000)+1;
+
+
                   var m2pxGrid = 10000/resolution;
                   var gridCanvas = document.getElementById("gridCanvas");
                   var gridCanvasHeight = nImgVertical*dyUTM*m2pxGrid;
@@ -256,9 +253,59 @@
 				div.style.left = (paperWidth*1000-15-xOffsetMM)+"mm"
 				div.className="yPosRight";
 				$("#container").append(div);
-			}
+    iCol = -1;
+    var drawColRun = function() {
+    iCol++
+    if (iCol >= nImgHorizontal)
+	    return;
+    var i = iCol;
+				for (var j = 0; j < nImgVertical; j++) {
+					var div = document.createElement("div");
+					
+					var img = document.createElement("img");
+					div.appendChild(img)
+					var xL = xLUTM+dxUTM*i;
+					var yL = yHUTM-dyUTM*j;
+					img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS="+map+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
+					img.style.width = imgWitdhMM+"mm";
+					img.style.height = imgHeighthMM+"mm";
+					img.style.position ="absolute";
+					img.style.top=0;
+					img.style.left=0;
+					img.onload=doneOneImg;
+					imgLoading++;
 
-		});              
+					if (shadow){
+						var img = document.createElement("img");
+						div.appendChild(img)
+						var xL = xLUTM+dxUTM*i;
+						var yL = yHUTM-dyUTM*j;
+						img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS="+"fjellskygge"+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
+						img.style.width = imgWitdhMM+"mm";
+						img.style.height = imgHeighthMM+"mm";
+						img.style.position ="absolute";
+						img.style.top=0;
+						img.style.left=0;
+						img.onload=doneOneImg;
+						imgLoading++;
+					}
+					
+					div.style.position ="absolute";
+					div.style.top=(0+imgHeighthMM*j)+"mm";
+					div.style.left=(0+imgWitdhMM*i)+"mm";
+					$("#container").append(div);
+				}
+    if (imgLoading<maxImgLoading)
+        drawCol();
+			
+};
+    drawCol = function() {
+    if (imgLoading<maxImgLoading)
+        setTimeout(drawColRun,1000);
+};
+		drawCol();
+
+		}});              
 		
 	</script>
 <script>

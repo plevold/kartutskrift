@@ -14,6 +14,16 @@
         <div style="height:100%;width:100%">
             NB: Dette er en betatest, feil kan forekomme! Sjøkart skal bare brukes i tillegg til eksisterende navigasjonsutstyr. <br/>
 <form method="get" action="statkartutsktift.html">
+Kart: <select name="map">
+        <option value="toporaster3">Topografisk</option>
+        <option value="sjo_hovedkart2">Sjøkart</option>
+        </select>
+Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
+            <option value="A3Landscape">A3 liggende</option>
+            <option value="A3">A3 stående</option>
+            <option value="A4Landscape">A4 liggende</option>
+            <option value="A4">A4 stående</option>
+        </select>
     UTM sone: <select oninput="updateUTM()" id="selectUTM">
         <option value="auto">auto</option>
         <option value="32">32</option>
@@ -24,24 +34,21 @@
 <input type="hidden" id="north" name="y"  step="any"     value=7037000></input>
 <input type="hidden" id="eastCenter"  value=566626></input>
 <input type="hidden" id="northCenter" value=7029849></input>
-<input type="hidden" name="resolution" step="any" value=50000></input>
-<input type="hidden" name="zoom" step=1 value=13></input>
+Målestokk 1:<input type="text" name="resolution" id="resolution" step="any" value=50000 oninput="updateResolution(this.value)"></input>
+Oppløsning <select name="zoom">
+	<option value="13">Høy</option>
+	<option value="12">Midels</option>
+	<option value="11">Lav</option>
+</select>
 <input type="hidden" id="previewZoom" value=3 />
-Kart: <select name="map">
-        <option value="toporaster2">Topografisk</option>
-        <option value="sjo_hovedkart2">Sjøkart</option>
-        </select>
-Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
-            <option value="A3Landscape">A3 liggende</option>
-            <option value="A3">A3 stående</option>
-            <option value="A4Landscape">A4 liggende</option>
-            <option value="A4">A4 stående</option>
-        </select>
+
+Skygge:<input type="checkbox" name="shadow" checked></input>
+
     <input type="submit" value="Gi meg kartet!"></input>
     </form>
 <br/>
-Kartet har målestokken 1:50 000, det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
-Siden er lagd for chrome, det anbefales å lagre til pdf først og så skrive ut pdf. Husk å velg "crop to size" eller noe sånt, slik at du får rett skala når du skriver ut.
+Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
+Siden er lagd for chrome, det anbefales å lagre til pdf først og så skrive ut pdfen. Husk å velg "crop to size" eller noe sånt, slik at du får rett skala når du skriver ut.
 
 <div>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -74,7 +81,7 @@ var utm = $("#UTM")[0].value;
 var projection = null;
 var projectionWGS84 = new OpenLayers.Projection("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 
-var resolution = 50000;
+var resolution = parseInt($("#resolution")[0].value);
 var paperWidth = .420;
 var paperHeight = .297;
 var mapHeight = $("#mapcontainer").height();
@@ -103,6 +110,10 @@ function getCenterPosition(){
     return map.getLonLatFromPixel(new OpenLayers.Pixel(mapWitdth/2,mapHeight/2));
 }
 
+function updateResolution(newResolution) {
+    resolution = parseInt(newResolution);
+    updateSquare();
+}
 
 function updateSquare(){
     var center =getCenterPosition();
@@ -202,7 +213,7 @@ if (utm == 32){
 //map.resolutions = [1800,900,450,225,120,50,25,10,4.5,3,2,1,0.5];
 map.tileSize = new OpenLayers.Size(256, 256);
 var ign = new OpenLayers.Layer.WMS( "Topo2",
-                                   "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'toporaster2'},{attribution:"&copy; <a href='http://www.statkart.no/'>Kartverket</a>"} );
+                                   "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'topo2'},{attribution:"&copy; <a href='http://www.statkart.no/'>Kartverket</a>"} );
 								 
 map.addLayer(ign);
 

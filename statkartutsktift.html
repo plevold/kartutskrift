@@ -42,7 +42,7 @@
   } 
     return query_string;
 } ();
-var maxImgLoading = 5;
+var maxImgLoading = 3;
 var imgLoading = 0;
 var nImgHorizontal;
 var drawCol;
@@ -69,6 +69,10 @@ var iCol;
 			if (QueryString['shadow'] != undefined) {
 				shadow = 1;
 			}
+            var skred = 0;
+            if (QueryString['skred'] != undefined) {
+                 skred = 1;
+            }
 			var resolution = 50000.;
                   if (QueryString['resolution'] != undefined) {
                   resolution = parseFloat(QueryString['resolution']);
@@ -82,7 +86,7 @@ var iCol;
 				yHUtmPrint = parseFloat(QueryString['y']);
 			}
 			
-			var map = "toporaster2";
+			var map = "toporaster3";
 			if (QueryString['map'] != undefined) {
 				map = QueryString['map'];
 			}
@@ -258,7 +262,7 @@ var iCol;
     iCol++
     if (iCol >= nImgHorizontal)
 	    return;
-    var i = iCol;
+                var i = iCol;
 				for (var j = 0; j < nImgVertical; j++) {
 					var div = document.createElement("div");
 					
@@ -289,6 +293,26 @@ var iCol;
 						img.onload=doneOneImg;
 						imgLoading++;
 					}
+                  /*
+                  if (true){
+                  var img = document.createElement("img");
+                  div.appendChild(img)
+                  var xL = xLUTM+dxUTM*i;
+                  var yL = yHUTM-dyUTM*j;
+                  img.src = "http://wms3.nve.no/map/services/SkredSnoAktR/MapServer/WmsServer?request=GetMap&LAYERS=Utlosningsomrade,Utlopsomrade&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png8&STYLES=default,default&transparent=true";
+                  img.style.width = imgWitdhMM+"mm";
+                  img.style.height = imgHeighthMM+"mm";
+                  img.style.position ="absolute";
+                  img.style.top=0;
+                  img.style.left=0;
+                  img.onload=doneOneImg;
+                  img.onerror = function(){
+                         var src = this.src;
+                         this.src = src.substr(0, src.indexOf('?')) + '?t=' + new Date().getTime()
+                         };
+                  imgLoading++;
+                  }
+                   */
 					
 					div.style.position ="absolute";
 					div.style.top=(0+imgHeighthMM*j)+"mm";
@@ -305,7 +329,50 @@ var iCol;
 };
 		drawCol();
 
-		}});              
+}
+        
+        
+
+        
+        /////////////////////// SKED
+                  if (skred) {
+        var imgWidthPxSkred = 4096;
+        var imgHeightPxSkred = 4096;
+        var dxUTMSkred = imgWidthPxSkred/pxPerM;
+        var dyUTMSkred = imgHeightPxSkred/pxPerM;
+        var imgWitdhMMSkred =(dxUTMSkred*1000./resolution);
+        var imgHeighthMMSkred =(dyUTMSkred*1000./resolution);
+        
+        var nImgHorizontalSkred = Math.ceil(paperWidth/imgWitdhMMSkred*1000)+1;
+        var nImgVerticalSkred = Math.ceil(paperHeight/imgHeighthMMSkred*1000)+1;
+        
+        for( var i = 0; i < nImgHorizontalSkred; i++) {
+            for (var j = 0; j < nImgVerticalSkred; j++) {
+                var div = document.createElement("div");
+                var img = document.createElement("img");
+                div.appendChild(img)
+                var xL = xLUTM+dxUTMSkred*i;
+                var yL = yHUTM-dyUTMSkred*j;
+                img.src = "http://wms3.nve.no/map/services/SkredSnoAktR/MapServer/WmsServer?request=GetMap&LAYERS=Utlosningsomrade,Utlopsomrade&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTMSkred)+","+(xL+dxUTMSkred)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPxSkred+"&HEIGHT="+imgHeightPxSkred+"&FORMAT=image/png8&STYLES=default,default&transparent=true";
+                img.style.width = imgWitdhMMSkred+"mm";
+                img.style.height = imgHeighthMMSkred+"mm";
+                img.style.position ="absolute";
+                img.style.top=0;
+                img.style.left=0;
+                img.style.zIndex=3;
+                div.style.position ="absolute";
+                div.style.top=(0+imgWitdhMMSkred*j)+"mm";
+                div.style.left=(0+imgWitdhMMSkred*i)+"mm";
+                div.style.zIndex=3;
+                
+                $("#container").append(div);
+            }
+            
+        }
+                  }
+            
+                  
+});
 		
 	</script>
 <script>

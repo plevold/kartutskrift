@@ -42,15 +42,7 @@
   } 
     return query_string;
 } ();
-var maxImgLoading = 3;
-var imgLoading = 0;
 var nImgHorizontal;
-var drawCol;
-var iCol;
-   var doneOneImg = function(){
-	imgLoading--;
-	drawCol();
-}
 	
 		$().ready(function(){
 			var UTM = 32;
@@ -125,10 +117,10 @@ var iCol;
 					window.alert("Input UTM zone is not supported");
 				}
 
-			var dxUTM = (xHUtmWms-xLUtmWms)/Math.pow(2,zoom);
-			var dyUTM = (yHUtmWms-yLUtmWms)/Math.pow(2,zoom);
-			var xLUTM = xLUtmPrint-(xLUtmPrint-xLUtmWms) % dxUTM;
-			var yHUTM = yHUtmPrint+dyUTM-(yHUtmPrint-yLUtmWms) % dyUTM;
+			var dxUTM = (xHUtmWms-xLUtmWms)/Math.pow(2,zoom)*4096/256;
+			var dyUTM = dxUTM;
+			var xLUTM = xLUtmPrint;
+			var yHUTM = yHUtmPrint;
 			
 			var cssPagedMedia = (function () {
 			var style = document.createElement('style');
@@ -179,12 +171,12 @@ var iCol;
 			$("#container")[0].style.left = xOffsetMM +"mm";
 			var imgWitdhMM =(dxUTM*1000./resolution);
 			var imgHeighthMM =(dyUTM*1000./resolution);
-                  var imgHeightPx = 256;
-                  var imgWidthPx = 256;
+                  var imgHeightPx = 4096;
+                  var imgWidthPx = 4096;
                   var pxPerM = imgWidthPx/dxUTM;
                   
-            nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000)+1;
-            nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000)+1;
+            nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000);
+            nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000);
 
 
                   var m2pxGrid = 10000/resolution;
@@ -257,12 +249,9 @@ var iCol;
 				div.style.left = (paperWidth*1000-15-xOffsetMM)+"mm"
 				div.className="yPosRight";
 				$("#container").append(div);
-    iCol = -1;
-    var drawColRun = function() {
-    iCol++
-    if (iCol >= nImgHorizontal)
-	    return;
-                var i = iCol;
+            }
+                  
+            for (var i = 0; i < nImgVertical; i++){
 				for (var j = 0; j < nImgVertical; j++) {
 					var div = document.createElement("div");
 					
@@ -270,31 +259,27 @@ var iCol;
 					div.appendChild(img)
 					var xL = xLUTM+dxUTM*i;
 					var yL = yHUTM-dyUTM*j;
-					img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS="+map+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
+					img.src = "http://openwms.statkart.no/skwms1/wms."+map+"?request=GetMap&LAYERS=toporaster&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
 					img.style.width = imgWitdhMM+"mm";
 					img.style.height = imgHeighthMM+"mm";
 					img.style.position ="absolute";
 					img.style.top=0;
 					img.style.left=0;
-					img.onload=doneOneImg;
-					imgLoading++;
 
 					if (shadow){
 						var img = document.createElement("img");
 						div.appendChild(img)
 						var xL = xLUTM+dxUTM*i;
 						var yL = yHUTM-dyUTM*j;
-						img.src = "http://opencache.statkart.no/gatekeeper/gk/gk.open?request=GetMap&LAYERS="+"fjellskygge"+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
+						img.src = "http://openwms.statkart.no/skwms1/wms.fjellskygge?request=GetMap&LAYERS=fjellskygge_wms&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
 						img.style.width = imgWitdhMM+"mm";
 						img.style.height = imgHeighthMM+"mm";
 						img.style.position ="absolute";
 						img.style.top=0;
 						img.style.left=0;
-						img.onload=doneOneImg;
-						imgLoading++;
 					}
-                  /*
-                  if (true){
+                  
+                  if (skred){
                   var img = document.createElement("img");
                   div.appendChild(img)
                   var xL = xLUTM+dxUTM*i;
@@ -305,71 +290,16 @@ var iCol;
                   img.style.position ="absolute";
                   img.style.top=0;
                   img.style.left=0;
-                  img.onload=doneOneImg;
-                  img.onerror = function(){
-                         var src = this.src;
-                         this.src = src.substr(0, src.indexOf('?')) + '?t=' + new Date().getTime()
-                         };
-                  imgLoading++;
                   }
-                   */
+
 					
 					div.style.position ="absolute";
 					div.style.top=(0+imgHeighthMM*j)+"mm";
 					div.style.left=(0+imgWitdhMM*i)+"mm";
 					$("#container").append(div);
 				}
-    if (imgLoading<maxImgLoading)
-        drawCol();
-			
-};
-    drawCol = function() {
-    if (imgLoading<maxImgLoading)
-        setTimeout(drawColRun,1000);
-};
-		drawCol();
 
 }
-        
-        
-
-        
-        /////////////////////// SKED
-                  if (skred) {
-        var imgWidthPxSkred = 4096;
-        var imgHeightPxSkred = 4096;
-        var dxUTMSkred = imgWidthPxSkred/pxPerM;
-        var dyUTMSkred = imgHeightPxSkred/pxPerM;
-        var imgWitdhMMSkred =(dxUTMSkred*1000./resolution);
-        var imgHeighthMMSkred =(dyUTMSkred*1000./resolution);
-        
-        var nImgHorizontalSkred = Math.ceil(paperWidth/imgWitdhMMSkred*1000)+1;
-        var nImgVerticalSkred = Math.ceil(paperHeight/imgHeighthMMSkred*1000)+1;
-        
-        for( var i = 0; i < nImgHorizontalSkred; i++) {
-            for (var j = 0; j < nImgVerticalSkred; j++) {
-                var div = document.createElement("div");
-                var img = document.createElement("img");
-                div.appendChild(img)
-                var xL = xLUTM+dxUTMSkred*i;
-                var yL = yHUTM-dyUTMSkred*j;
-                img.src = "http://wms3.nve.no/map/services/SkredSnoAktR/MapServer/WmsServer?request=GetMap&LAYERS=Utlosningsomrade,Utlopsomrade&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTMSkred)+","+(xL+dxUTMSkred)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPxSkred+"&HEIGHT="+imgHeightPxSkred+"&FORMAT=image/png8&STYLES=default,default&transparent=true";
-                img.style.width = imgWitdhMMSkred+"mm";
-                img.style.height = imgHeighthMMSkred+"mm";
-                img.style.position ="absolute";
-                img.style.top=0;
-                img.style.left=0;
-                img.style.zIndex=3;
-                div.style.position ="absolute";
-                div.style.top=(0+imgWitdhMMSkred*j)+"mm";
-                div.style.left=(0+imgWitdhMMSkred*i)+"mm";
-                div.style.zIndex=3;
-                
-                $("#container").append(div);
-            }
-            
-        }
-                  }
             
                   
 });

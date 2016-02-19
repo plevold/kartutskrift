@@ -21,7 +21,7 @@ Kart: <select name="map">
 Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
             <option value="A3Landscape">A3 liggende</option>
             <option value="A3">A3 stående</option>
-            <option value="A4Landscape">A4 liggende</option>
+            <option value="A4Landscape" selected>A4 liggende</option>
             <option value="A4">A4 stående</option>
         </select>
     UTM sone: <select oninput="updateUTM()" id="selectUTM">
@@ -37,13 +37,14 @@ Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
 Målestokk 1:<input type="text" name="resolution" id="resolution" step="any" value=50000 oninput="updateResolution(this.value)"></input>
 Oppløsning <select name="zoom">
 	<option value="13">Høy</option>
-	<option value="12">Midels</option>
+	<option value="12" selected>Midels</option>
 	<option value="11">Lav</option>
 </select>
 <input type="hidden" id="previewZoom" value=3 />
 
 Skygge:<input type="checkbox" name="shadow" checked></input>
-Skredfare:<input type="checkbox" name="skred"></input>
+Forsvarets skredkart:<input type="checkbox" name="skredForsvaret"></input>
+NVEs skredkart:<input type="checkbox" name="skred"></input>
     <input type="submit" value="Gi meg kartet!"></input>
     </form>
 <br/>
@@ -68,14 +69,14 @@ Siden er lagd for chrome, det anbefales å lagre til pdf først og så skrive ut
 
 </div>
 <script>
-    
+
     Proj4js.defs["EPSG:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:32633"] = "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:32634"] = "+proj=utm +zone=34 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:32635"] = "+proj=utm +zone=35 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:32636"] = "+proj=utm +zone=36 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:4326"]   = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-    
+
 var map = null;
 var utm = $("#UTM")[0].value;
 var projection = null;
@@ -102,7 +103,7 @@ function changePaper(paper) {
         paperHeight = .297;
     }
     updateSquare();
-	
+
 }
 
 
@@ -131,7 +132,7 @@ function updateSquare(){
     var bottom = loc.y;
     var height = bottom-top;
     var width = right-left;
-    
+
     var box = $("#box")[0];
     box.style.top = top + "px";
     box.style.left = left + "px";
@@ -155,7 +156,7 @@ function updateLocation(){
     {
         updateUTM();
     }
-    
+
 }
 
 function getUtm(){
@@ -165,7 +166,7 @@ function getUtm(){
 function getProjection(utm){
     map.projection = "EPSG:326"+utm;
     return new OpenLayers.Projection(map.projection)
-    
+
 }
 
 function getBestUtm(){
@@ -175,7 +176,7 @@ function getBestUtm(){
     center = getCenterPosition();
     var latlon = [0,0];
     UTMXYToLatLon(center.lon,center.lat,getUtm(),false,latlon);
-    
+
     east = latlon[1]*180/pi;
     if (east < 12){
         return 32;
@@ -214,7 +215,7 @@ if (utm == 32){
 map.tileSize = new OpenLayers.Size(256, 256);
 var ign = new OpenLayers.Layer.WMS( "Topo2",
                                    "http://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'topo2'},{attribution:"&copy; <a href='http://www.statkart.no/'>Kartverket</a>"} );
-								 
+
 map.addLayer(ign);
 
 map.setCenter(center,zoom,false,false);

@@ -14,14 +14,14 @@
         </div>
 				<div id="Copyright">© Kartverket</div>
 			<div id="UTM"></div>
-            
+
 			</div>
 
 
-            
+
 	<script>
 		var QueryString = function () {
-  // This function is anonymous, is executed immediately and 
+  // This function is anonymous, is executed immediately and
   // the return value is assigned to QueryString!
   var query_string = {};
   var query = window.location.search.substring(1);
@@ -39,11 +39,11 @@
     } else {
       query_string[pair[0]].push(pair[1]);
     }
-  } 
+  }
     return query_string;
 } ();
 var nImgHorizontal;
-	
+
 		$().ready(function(){
 			var UTM = 32;
 			if (QueryString['UTM'] != undefined) {
@@ -65,6 +65,11 @@ var nImgHorizontal;
             if (QueryString['skred'] != undefined) {
                  skred = 1;
             }
+            var skredForsvaret = 0;
+            if (QueryString['skredForsvaret'] != undefined) {
+			                 skredForsvaret = 1;
+            }
+
 			var resolution = 50000.;
                   if (QueryString['resolution'] != undefined) {
                   resolution = parseFloat(QueryString['resolution']);
@@ -77,12 +82,12 @@ var nImgHorizontal;
 			if (QueryString['y'] != undefined) {
 				yHUtmPrint = parseFloat(QueryString['y']);
 			}
-			
+
 			var map = "toporaster3";
 			if (QueryString['map'] != undefined) {
 				map = QueryString['map'];
 			}
-            
+
                   var mapName;
             if (map == "toporaster3")
                   mapName = "toporaster";
@@ -90,34 +95,34 @@ var nImgHorizontal;
                   mapName = "hoved";
                   map = "sjokartraster";
                   }
-			
+
 			var xLUtmWms = 0;
 			var yLUtmWms = 0;
 			var xHUtmWms = 0;
 			var yHUtmWms = 0;
-			
+
 			if (UTM == 32){
-				xLUtmWms = -2000000; 
+				xLUtmWms = -2000000;
 				yLUtmWms = 3500000;
 				xHUtmWms = 3545984;
 				yHUtmWms = 9045984;
 				} else if( UTM == 33){
-				xLUtmWms = -2500000; 
+				xLUtmWms = -2500000;
 				yLUtmWms = 	3500000;
 				xHUtmWms = 	3045984;
 				yHUtmWms = 	9045984;
 				} else if( UTM == 34) {
-				xLUtmWms = -3000000; 
+				xLUtmWms = -3000000;
 				yLUtmWms = 	3500000;
 				xHUtmWms = 	2545984;
 				yHUtmWms = 	9045984;
 				} else if( UTM == 35){
-				xLUtmWms = -3500000; 
+				xLUtmWms = -3500000;
 				yLUtmWms = 	3500000;
 				xHUtmWms = 	2045984;
 				yHUtmWms = 	9045984;
 				} else if( UTM == 36){
-				xLUtmWms = -4000000; 
+				xLUtmWms = -4000000;
 				yLUtmWms = 	3500000;
 				xHUtmWms = 	1545984;
 				yHUtmWms = 	9045984;
@@ -129,7 +134,7 @@ var nImgHorizontal;
 			var dyUTM = dxUTM;
 			var xLUTM = xLUtmPrint;
 			var yHUTM = yHUtmPrint;
-			
+
 			var cssPagedMedia = (function () {
 			var style = document.createElement('style');
 			document.head.appendChild(style);
@@ -168,10 +173,10 @@ var nImgHorizontal;
 			$("#paper")[0].style.width=(paperWidth*1000)+"mm";
 			$("#paper")[0].style.height=(paperHeight*1000)+"mm";
 
-			
-			
-						
-			
+
+
+
+
 			var yOffsetMM = (yHUtmPrint-yHUTM)/resolution*1000;
 			var xOffsetMM = -(xLUtmPrint-xLUTM)/resolution*1000;
 			$("#UTM")[0].innerText="UTM Zone: "+UTM;
@@ -182,9 +187,9 @@ var nImgHorizontal;
                   var imgHeightPx = 4096;
                   var imgWidthPx = 4096;
                   var pxPerM = imgWidthPx/dxUTM;
-                  
-            nImgHorizontal = Math.ceil(paperWidth/imgWitdhMM*1000);
-            nImgVertical = Math.ceil(paperHeight/imgHeighthMM*1000);
+
+            nImgHorizontal = paperWidth/imgWitdhMM*1000;
+            nImgVertical = paperHeight/imgHeighthMM*1000;
 
 
                   var m2pxGrid = 10000/resolution;
@@ -200,14 +205,14 @@ var nImgHorizontal;
                   gridCanvasWrapper.style.top = (-gridCanvasHeight*(1-scale)*.5)+"px";
                   gridCanvasWrapper.style.left = (-gridCanvasWidth*(1-scale)*.5)+"px";
                   var gridCanvasCtx = gridCanvas.getContext("2d");
-                  
+
 			for (var x = 1000 -(xLUTM % 1000); x < paperWidth*resolution+dxUTM; x+= 1000){
 				var xUTMPos = x+xLUTM;
                   var pxX = x*m2pxGrid;
                   gridCanvasCtx.beginPath();
                   gridCanvasCtx.moveTo(pxX,0);
                   gridCanvasCtx.lineTo(pxX,gridCanvasHeight);
-                  
+
 				if ((xUTMPos % 5000)>0){
                   gridCanvasCtx.lineWidth = 1;
 				} else {
@@ -215,7 +220,7 @@ var nImgHorizontal;
 				}
                   gridCanvasCtx.strokeStyle = '#0000ff';
                   gridCanvasCtx.stroke();
-				
+
                   var div = document.createElement("div");
 				div.innerText = xUTMPos/1000;
 				div.style.left=(0+x/resolution)*1000+"mm";
@@ -229,14 +234,14 @@ var nImgHorizontal;
 				div.className="xPosBottom";
 				$("#container").append(div);
 			}
-			
+
 			for (var y = -((yHUTM) % 1000); -y < paperHeight*resolution+dyUTM; y-= 1000){
 				var yUTMPos = yHUTM +y;
                   var pxY = -y*m2pxGrid;
                   gridCanvasCtx.beginPath();
                   gridCanvasCtx.moveTo(0,pxY);
                   gridCanvasCtx.lineTo(gridCanvasWidth,pxY);
-                  
+
 				if ((yUTMPos % 5000)>0){
                   gridCanvasCtx.lineWidth = 1;
 				} else {
@@ -244,7 +249,7 @@ var nImgHorizontal;
 				}
                   gridCanvasCtx.strokeStyle = '#0000ff';
                   gridCanvasCtx.stroke();
-				
+
 				var div = document.createElement("div");
 				div.innerText = yUTMPos/1000;
 				div.style.top=(0-y/resolution)*1000+"mm";
@@ -258,19 +263,36 @@ var nImgHorizontal;
 				div.className="yPosRight";
 				$("#container").append(div);
             }
-                  
-            for (var i = 0; i < nImgVertical; i++){
+
+            for (var i = 0; i < nImgHorizontal; i++){
 				for (var j = 0; j < nImgVertical; j++) {
 					var div = document.createElement("div");
-					
+
 					var img = document.createElement("img");
 					div.appendChild(img)
 					var xL = xLUTM+dxUTM*i;
 					var yL = yHUTM-dyUTM*j;
-                  
-					img.src = "http://openwms.statkart.no/skwms1/wms."+map+"?request=GetMap&LAYERS="+mapName+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png";
-					img.style.width = imgWitdhMM+"mm";
-					img.style.height = imgHeighthMM+"mm";
+                  var dxScale;
+                  var width;
+                  var dy;
+                  if (nImgHorizontal-i >= 1){
+                    dxScale = 1
+                  } else {
+                    dxScale = Math.ceil((nImgHorizontal-i)*imgWidthPx)/imgWidthPx;
+                  }
+                  var dyScale
+                  if (nImgVertical-j >= 1){
+				      dyScale = 1
+				  } else {
+				      dyScale = Math.ceil((nImgVertical-j)*imgHeightPx)/imgHeightPx;
+                  }
+
+
+
+
+					img.src = "http://openwms.statkart.no/skwms1/wms."+map+"?request=GetMap&LAYERS="+mapName+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM*dyScale)+","+(xL+dxUTM*dxScale)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx*dxScale+"&HEIGHT="+imgHeightPx*dyScale+"&FORMAT=image/png";
+					img.style.width = imgWitdhMM*dxScale+"mm";
+					img.style.height = imgHeighthMM*dyScale+"mm";
 					img.style.position ="absolute";
 					img.style.top=0;
 					img.style.left=0;
@@ -287,7 +309,7 @@ var nImgHorizontal;
 						img.style.top=0;
 						img.style.left=0;
 					}
-                  
+
                   if (skred){
                   var img = document.createElement("img");
                   div.appendChild(img)
@@ -301,18 +323,33 @@ var nImgHorizontal;
                   img.style.left=0;
                   }
 
-					
+                  				if (skredForsvaret){
+				  				                  var img = document.createElement("img");
+				  				                  div.appendChild(img)
+				  				                  var xL = xLUTM+dxUTM*i;
+				  				                  var yL = yHUTM-dyUTM*j;
+				  				                  img.src = "http://wms3.nve.no/map/services/SkredSnoForsvaret/MapServer/WmsServer?request=GetMap&LAYERS=Utlosningsomrade,Utlopsomrade&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM)+","+(xL+dxUTM)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx+"&HEIGHT="+imgHeightPx+"&FORMAT=image/png8&STYLES=default,default&transparent=true";
+				  				                  img.style.width = imgWitdhMM+"mm";
+				  				                  img.style.height = imgHeighthMM+"mm";
+				  				                  img.style.position ="absolute";
+				  				                  img.style.top=0;
+				  				                  img.style.left=0;
+				                  }
+
+
 					div.style.position ="absolute";
 					div.style.top=(0+imgHeighthMM*j)+"mm";
 					div.style.left=(0+imgWitdhMM*i)+"mm";
 					$("#container").append(div);
 				}
 
+
+
 }
-            
-                  
+
+
 });
-		
+
 	</script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

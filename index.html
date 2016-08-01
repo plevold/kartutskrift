@@ -16,9 +16,13 @@
 <form method="get" action="statkartutsktift.html">
 Kart: <select name="map">
         <option value="toporaster3">Topografisk</option>
+        <option value="topo2">Skjermkart</option>
         <option value="sjo_hovedkart2">Sjøkart</option>
         </select>
 Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
+            <option value="A0">A0 stående</option>
+            <option value="A1">A1 stående</option>
+            <option value="A2">A2 stående</option>
             <option value="A3Landscape">A3 liggende</option>
             <option value="A3">A3 stående</option>
             <option value="A4Landscape" selected>A4 liggende</option>
@@ -42,7 +46,7 @@ Oppløsning <select name="zoom">
 </select>
 <input type="hidden" id="previewZoom" value=3 />
 
-Skygge:<input type="checkbox" name="shadow" checked></input>
+Skygge:<input type="checkbox" name="shadow"></input>
 Forsvarets skredkart:<input type="checkbox" name="skredForsvaret"></input>
 NVEs skredkart:<input type="checkbox" name="skred"></input>
     <input type="submit" value="Gi meg kartet!"></input>
@@ -101,6 +105,16 @@ function changePaper(paper) {
     } else if (paper == "A4") {
         paperWidth = .210;
         paperHeight = .297;
+    } else if (paper == "A2") {
+        paperWidth = .420;
+        paperHeight = .594;
+    }
+    else if (paper == "A1") {
+        paperWidth = .594;
+        paperHeight = .841;
+    } else if (paper == "A0") {
+        paperWidth = .841;
+        paperHeight = 1.186;
     }
     updateSquare();
 

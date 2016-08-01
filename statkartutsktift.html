@@ -12,7 +12,7 @@
                 <canvas id="gridCanvas"></canvas>
             </div>
         </div>
-				<div id="Copyright">© Kartverket</div>
+        <div id="Copyright">Skrevet ut fra: folk.ntnu.no/torstebo/statkart © Kartverket</div>
 			<div id="UTM"></div>
 
 			</div>
@@ -95,6 +95,9 @@ var nImgHorizontal;
                   mapName = "hoved";
                   map = "sjokartraster";
                   }
+            else if (map == "topo2"){
+                  mapName = "topo2_WMS";
+                  }
 
 			var xLUtmWms = 0;
 			var yLUtmWms = 0;
@@ -165,7 +168,22 @@ var nImgHorizontal;
                   paperWidth = QueryString['paperWidth'];
                   paperHeight = QueryString['paperHeight'];
                   cssPagedMedia.size(paperWidth*1000 + ' mm '+ paperHeight*1000 + ' mm');
-                  }else {
+                  }else if (papertype == "A0") {
+                    paperWidth = .841;
+                    paperHeight = 1.186;
+                  cssPagedMedia.size('A0');
+                  }
+                  else if (papertype == "A1") {
+                  paperWidth  = .594;
+                  paperHeight = .841;
+                  cssPagedMedia.size('A1');
+                  }
+                  else if (papertype == "A2") {
+                  paperWidth  = .420;
+                  paperHeight = .594;
+                  cssPagedMedia.size('A2');
+                  }
+                  else {
 				paperWidth = .297;
 				paperHeight = .420;
 				cssPagedMedia.size('A3');
@@ -205,8 +223,11 @@ var nImgHorizontal;
                   gridCanvasWrapper.style.top = (-gridCanvasHeight*(1-scale)*.5)+"px";
                   gridCanvasWrapper.style.left = (-gridCanvasWidth*(1-scale)*.5)+"px";
                   var gridCanvasCtx = gridCanvas.getContext("2d");
-
-			for (var x = 1000 -(xLUTM % 1000); x < paperWidth*resolution+dxUTM; x+= 1000){
+             
+                  var dxGridlines = 1000;
+            if (resolution>100000)
+                  dxGridlines = 5000;
+			for (var x = dxGridlines -(xLUTM % dxGridlines); x < paperWidth*resolution+dxUTM; x+= dxGridlines){
 				var xUTMPos = x+xLUTM;
                   var pxX = x*m2pxGrid;
                   gridCanvasCtx.beginPath();
@@ -234,8 +255,9 @@ var nImgHorizontal;
 				div.className="xPosBottom";
 				$("#container").append(div);
 			}
-
-			for (var y = -((yHUTM) % 1000); -y < paperHeight*resolution+dyUTM; y-= 1000){
+            
+            
+			for (var y = -((yHUTM) % dxGridlines); -y < paperHeight*resolution+dyUTM; y-= dxGridlines){
 				var yUTMPos = yHUTM +y;
                   var pxY = -y*m2pxGrid;
                   gridCanvasCtx.beginPath();

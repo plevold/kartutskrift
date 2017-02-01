@@ -1,17 +1,19 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="nb">
     <head>
         <meta charset="UTF-8">
+        <title>Statkart print BETA</title>
         <script src="jquery-2.1.1.js"></script>
         <script src="statkart.js"></script>
         <script type="text/javascript" src="proj4js-compressed.js"></script>
        <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>
        <script type="text/javascript" src="utm2latlon.js"></script>
        <link rel="stylesheet" type="text/css" href="stylePreview.css">
-        <title>Statkart print BETA</title>
+
     </head>
     <body>
         <div style="height:100%;width:100%">
+
             NB: Dette er en betatest, feil kan forekomme! Sjøkart skal bare brukes i tillegg til eksisterende navigasjonsutstyr. <br/>
 <form method="get" action="statkartutsktift.html">
 Kart: <select name="map">
@@ -34,26 +36,37 @@ Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
         <option value="33">33</option>
         <option value="35">35</option>
         </select><input type="hidden" id="UTM" name="UTM" value="32"/>
-<input type="hidden" id="east" name="x"  step="any" value=557000></input>
-<input type="hidden" id="north" name="y"  step="any"     value=7037000></input>
-<input type="hidden" id="eastCenter"  value=566626></input>
-<input type="hidden" id="northCenter" value=7029849></input>
-Målestokk 1:<input type="text" name="resolution" id="resolution" step="any" value=50000 oninput="updateResolution(this.value)"></input>
+<input type="hidden" id="east" name="x" value=557000>
+<input type="hidden" id="north" name="y" value=7037000>
+<input type="hidden" id="eastCenter"  value=566626>
+<input type="hidden" id="northCenter" value=7029849>
+Målestokk 1:<input type="text" name="resolution" id="resolution" value=50000 oninput="updateResolution(this.value)">
 Oppløsning <select name="zoom">
 	<option value="13">Høy</option>
 	<option value="12" selected>Middels</option>
 	<option value="11">Lav</option>
 </select>
-<input type="hidden" id="previewZoom" value=3 />
+<input type="hidden" id="previewZoom" value=3 >
 
-Skygge:<input type="checkbox" name="shadow"></input>
-Forsvarets skredkart:<input type="checkbox" name="skredForsvaret"></input>
-NVEs skredkart:<input type="checkbox" name="skred"></input>
-    <input type="submit" value="Gi meg kartet!"></input>
+Skiruter:<input type="checkbox" name="skiloype">
+Forsvarets skredkart:<input type="checkbox" name="skredForsvaret">
+NVEs skredkart:<input type="checkbox" name="skred">
+    <input type="submit" value="Gi meg kartet!">
     </form>
 <br/>
 Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
 Siden er lagd for chrome, det anbefales å lagre til pdf først og så skrive ut pdfen. Husk å velg "crop to size" eller noe sånt, slik at du får rett skala når du skriver ut.
+
+<div style="
+    background-color: #2196F3;
+    color: white;
+    padding: 20px;
+    opacity: 0.83;
+    margin-bottom: 15px;
+">
+Takk for at du bruker siden min! Hvis du har lyst til å gi en takk så støtt min AMF aksjon: <a href="http://www.AgainstMalaria.com/Fundraiser.aspx?FundraiserID=7545">
+<img src="http://www.AgainstMalaria.com/downloads/badges/AM_Badge2_en.png" style="border: 0px" alt="Against Malaria"></a>
+</div>
 
 <div>
     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -66,7 +79,7 @@ Siden er lagd for chrome, det anbefales å lagre til pdf først og så skrive ut
     <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-<div id="mapcontainer" style="width:70%;height:80%;top:100px;left:5%;position:absolute;">
+<div id="mapcontainer" style="width:70%;height:80%;top:200px;left:5%;position:absolute;">
 <div id="box" style="position:absolute;top:240px;bottom:240px;left:240px;right:240px;border: 1px black solid;z-index: 800;pointer-events:none;"></div>
 </div>
 </div>

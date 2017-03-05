@@ -2,7 +2,7 @@
 <html lang="nb">
     <head>
         <meta charset="UTF-8">
-        <title>Statkart print BETA</title>
+        <title>Kartutskrift.no</title>
         <script src="jquery-2.1.1.js"></script>
         <script src="statkart.js"></script>
         <script type="text/javascript" src="proj4js-compressed.js"></script>
@@ -12,16 +12,27 @@
 
     </head>
     <body>
-        <div style="height:100%;width:100%">
+            <div class="navbar">
+                <div class="navbar-brand">
+                    Kartutskrift.no
+                </div>
+            </div>
+            <div id="container">
+<div id="sidebar">
+<div class="sidebar-row">
 
-            NB: Dette er en betatest, feil kan forekomme! Sjøkart skal bare brukes i tillegg til eksisterende navigasjonsutstyr. <br/>
 <form method="get" action="statkartutsktift.html">
-Kart: <select name="map">
+<table>
+<tr>
+    <td>Kart:</td> <td> <select name="map">
         <option value="toporaster3">Topografisk</option>
         <option value="topo2">Skjermkart</option>
         <option value="sjo_hovedkart2">Sjøkart</option>
-        </select>
-Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
+        </select> </td>
+</tr>
+<tr>
+    <td> Ark:</td>
+    <td> <select id="paperSize" oninput="changePaper(this.value)" name="paper">
             <option value="A0">A0 stående</option>
             <option value="A1">A1 stående</option>
             <option value="A2">A2 stående</option>
@@ -30,7 +41,14 @@ Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
             <option value="A4Landscape" selected>A4 liggende</option>
             <option value="A4">A4 stående</option>
         </select>
-    UTM sone: <select oninput="updateUTM()" id="selectUTM">
+    </td>
+</tr>
+<tr>
+    <td>
+        UTM sone:
+    </td>
+    <td>
+        <select oninput="updateUTM()" id="selectUTM">
         <option value="auto">auto</option>
         <option value="32">32</option>
         <option value="33">33</option>
@@ -40,50 +58,76 @@ Ark: <select id="paperSize" oninput="changePaper(this.value)" name="paper">
 <input type="hidden" id="north" name="y" value=7037000>
 <input type="hidden" id="eastCenter"  value=566626>
 <input type="hidden" id="northCenter" value=7029849>
-Målestokk 1:<input type="text" name="resolution" id="resolution" value=50000 oninput="updateResolution(this.value)">
-Oppløsning <select name="zoom">
-	<option value="13">Høy</option>
-	<option value="12" selected>Middels</option>
-	<option value="11">Lav</option>
-</select>
-<input type="hidden" id="previewZoom" value=3 >
-<br>
-Skiruter:<input type="checkbox" name="skiloype">
-Fotruter:<input type="checkbox" name="fotruter">
-Forsvarets skredkart:<input type="checkbox" name="skredForsvaret">
-NVEs skredkart:<input type="checkbox" name="skred">
-    <br>
-    <input type="submit" value="Gi meg kartet!">
+    </td>
+</tr>
+<tr>
+    <td> Målestokk </td>
+    <td>
+        1:<input type="text" name="resolution" id="resolution" value=50000 oninput="updateResolution(this.value)">
+    </td>
+</tr>
+<tr>
+    <td>
+        Oppløsning:
+    </td>
+    <td>
+        <select name="zoom">
+            <option value="13">Høy</option>
+            <option value="12" selected>Middels</option>
+            <option value="11">Lav</option>
+        </select>
+    </td>
+    <input type="hidden" id="previewZoom" value=3 >
+</tr>
+<tr>
+    <td>Skiruter:</td>
+    <td>
+        <input type="checkbox" name="skiloype">
+    </td>
+</tr>
+<tr>
+    <td>Fotruter:</td>
+    <td><input type="checkbox" name="fotruter"></td>
+    </tr>
+<tr>
+    <td>
+    Forsvarets skredkart:
+    </td>
+    <td><input type="checkbox" name="skredForsvaret"></td>
+    </tr>
+<tr>
+    <td>NVEs skredkart:</td>
+    <td><input type="checkbox" name="skred"></td>
+    </tr>
+<tr>
+</tr>
+<tr>
+    <td>
+</table>
+<div>
+    <input class="button" type="submit" value="Gi meg kartet!">
+        </div>
+        </td>
+        </tr>
     </form>
+
 <br/>
 Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
-Siden er lagd for chrome, det anbefales å lagre til pdf først og så skrive ut pdfen. Husk å velg "crop to size" eller noe sånt, slik at du får rett skala når du skriver ut.
-
-<div style="
-    background-color: #2196F3;
-    color: white;
-    padding: 20px;
-    opacity: 0.83;
-    margin-bottom: 15px;
-">
-Takk for at du bruker siden min! Hvis du har lyst til å gi en takk så støtt min AMF aksjon: <a href="http://www.AgainstMalaria.com/Fundraiser.aspx?FundraiserID=7545">
-<img src="http://www.AgainstMalaria.com/downloads/badges/AM_Badge2_en.png" style="border: 0px" alt="Against Malaria"></a>
+</div>
+<div id="amf">
+<div class="sidebar-row">
+    Takk for at du bruker siden min! Hvis du har lyst til å gi en takk så støtt min AMF aksjon: <a href="http://www.AgainstMalaria.com/Fundraiser.aspx?FundraiserID=7545">
+        <img src="http://www.AgainstMalaria.com/downloads/badges/AM_Badge2_en.png" style="border: 0px" alt="Against Malaria"></a>
+</div>
+</div>
 </div>
 
-<div>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <!-- Statkart Print -->
-    <ins class="adsbygoogle"
-        style="display:inline-block;width:160px;height:600px;right: 5%;
-        position: absolute;"
-        data-ad-client="ca-pub-0796409597904944"
-        data-ad-slot="7035529696"></ins>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-<div id="mapcontainer" style="width:70%;height:80%;top:200px;left:5%;position:absolute;">
-<div id="box" style="position:absolute;top:240px;bottom:240px;left:240px;right:240px;border: 1px black solid;z-index: 800;pointer-events:none;"></div>
-</div>
+
+
+<div id="map">
+    <div id="mapcontainer">
+        <div id="box"></div>
+    </div>
 </div>
 
 </div>

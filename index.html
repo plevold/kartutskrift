@@ -9,7 +9,27 @@
        <script type="text/javascript" src="https://openlayers.org/api/OpenLayers.js"></script>
        <script type="text/javascript" src="utm2latlon.js"></script>
        <link rel="stylesheet" type="text/css" href="stylePreview.css">
-
+           <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+           <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+           <script>
+               window.addEventListener("load", function(){
+                                       window.cookieconsent.initialise({
+                                                                       "palette": {
+                                                                       "popup": {
+                                                                       "background": "#000"
+                                                                       },
+                                                                       "button": {
+                                                                       "background": "#f1d600"
+                                                                       }
+                                                                       },
+                                                                       "position": "bottom-right",
+                                                                       "content": {
+                                                                       "message": "Denne siden bruker informasjonskapsler  for å bedre din opplevelse.\n",
+                                                                       "dismiss": "Den er grei!",
+                                                                       "link": "Lær mer"
+                                                                       }
+                                                                       })});
+               </script>
     </head>
     <body>
             <div class="navbar">
@@ -49,7 +69,7 @@
     </td>
 </tr>
 <tr>
-    <td colspan="2" onclick="toggleAdvanceOptions();" id="advancedOptions">Avanserte instillinger</td>
+    <td colspan="2" id="advancedOptions">Avanserte instillinger</td>
 </table>
 
 <table>
@@ -84,7 +104,7 @@
             <option value="11">Lav</option>
         </select>
     </td>
-    
+
 </tr>
 <tr class="advancedOptions">
     <td>Skiruter:</td>
@@ -105,6 +125,10 @@
 <tr class="advancedOptions">
     <td>NVEs skredkart:</td>
     <td><input type="checkbox" name="skred"></td>
+    </tr>
+    <tr class="advancedOptions">
+	    <td>Bratthet:</td>
+	    <td><input type="checkbox" name="bratthet"></td>
     </tr>
 </table>
 </div>
@@ -156,7 +180,7 @@ Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
             $('.advancedOptions').css('display', 'none');
             isOptionsHidden = true;
         }
-        
+
     }
 
     Proj4js.defs["EPSG:32632"] = "+proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
@@ -347,10 +371,10 @@ changePaper($('#paperSize')[0].value);
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-   
+
    ga('create', 'UA-38807768-1', 'auto');
    ga('send', 'pageview');
-   
+
     </script>
     </body>
 </html>

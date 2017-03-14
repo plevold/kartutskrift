@@ -188,7 +188,8 @@ Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
     Proj4js.defs["EPSG:32634"] = "+proj=utm +zone=34 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:32635"] = "+proj=utm +zone=35 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
     Proj4js.defs["EPSG:32636"] = "+proj=utm +zone=36 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-    Proj4js.defs["EPSG:4326"]   = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+    Proj4js.defs["EPSG:4326"] = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+    Proj4js.defs["EPSG:3006"] = "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
 
 var map = null;
 var utm = $("#UTM")[0].value;
@@ -288,6 +289,7 @@ function getUtm(){
 
 function getProjection(utm){
     map.projection = "EPSG:326"+utm;
+    //map.projection = "EPSG:3006";
     return new OpenLayers.Projection(map.projection)
 
 }
@@ -336,9 +338,18 @@ if (utm == 32){
 }
 //map.resolutions = [1800,900,450,225,120,50,25,10,4.5,3,2,1,0.5];
 map.tileSize = new OpenLayers.Size(256, 256);
+
+//var ign = new OpenLayers.Layer.WMS( "fjallkartan",
+//                                   "https://kso.etjanster.lantmateriet.se/karta/allmannakartor/wms/v1", 
+//                                   {layers: 'fjallkartan',
+//                                   transparent: true,
+//                                   projection:'EPSG:3006',
+//                                   srs:'EPSG:3006'},
+//                                   {attribution:"&copy; <a href='http://www.statkart.no/'>Kartverket</a>"} );
+//map.addLayer(ign);
+
 var ign = new OpenLayers.Layer.WMS( "Topo2",
                                    "https://opencache.statkart.no/gatekeeper/gk/gk.open", {layers: 'topo2'},{attribution:"&copy; <a href='http://www.statkart.no/'>Kartverket</a>"} );
-
 map.addLayer(ign);
 
 map.setCenter(center,zoom,false,false);

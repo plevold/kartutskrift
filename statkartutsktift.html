@@ -77,7 +77,7 @@ var nImgHorizontal;
             }
 
             if (skredForsvaret || skred) {
-                  $('#Copyright')[0].innerText += ", NVE"
+                  $('#Copyright')[0].innerHTML += ", NVE"
             }
 
             var skiloype = 0;
@@ -113,6 +113,7 @@ var nImgHorizontal;
             else if (map == "sjo_hovedkart2"){
                   mapName = "hoved";
                   map = "sjokartraster";
+                  $('#Copyright')[0].innerHTML = "Kartet er ikke beregnet for navigasjon.<br/>" + $('#Copyright')[0].innerHTML;
                   }
             else if (map == "topo2"){
                   mapName = "topo2_WMS";
@@ -216,7 +217,7 @@ var nImgHorizontal;
 
 			var yOffsetMM = (yHUtmPrint-yHUTM)/resolution*1000;
 			var xOffsetMM = -(xLUtmPrint-xLUTM)/resolution*1000;
-			$("#UTM")[0].innerText="UTM Zone: "+UTM;
+			$("#UTM")[0].innerHTML="UTM Zone: "+UTM;
 			$("#container")[0].style.top = yOffsetMM +"mm";
 			$("#container")[0].style.left = xOffsetMM +"mm";
 			var imgWitdhMM =(dxUTM*1000./resolution);
@@ -237,7 +238,7 @@ var nImgHorizontal;
                  gridCanvas.width = gridCanvasWidth;
                   var scale = 3.779528/(resolution*m2pxGrid*.001) // displayPx/canvasPx
                 gridCanvas.style.transform = "scale("+scale+","+scale+")";
-				gridCanvas.style.cssText = "-webkit-transform: scale("+scale+","+scale+");"
+				gridCanvas.style.cssText = "transform: scale("+scale+","+scale+");"
                 var gridCanvasWrapper =document.getElementById("gridCanvasWrapper");
                   gridCanvasWrapper.style.top = (-gridCanvasHeight*(1-scale)*.5)+"px";
                   gridCanvasWrapper.style.left = (-gridCanvasWidth*(1-scale)*.5)+"px";
@@ -262,13 +263,13 @@ var nImgHorizontal;
                   gridCanvasCtx.stroke();
 
                   var div = document.createElement("div");
-				div.innerText = xUTMPos/1000;
+				div.innerHTML = xUTMPos/1000;
 				div.style.left=(0+x/resolution)*1000+"mm";
 				div.style.top=(-yOffsetMM+10)+"mm";
 				div.className="xPosTop";
 				$("#container").append(div);
 				var div = document.createElement("div");
-				div.innerText = xUTMPos/1000;
+				div.innerHTML = xUTMPos/1000;
 				div.style.left=(0+x/resolution)*1000+"mm";
 				div.style.top=(-yOffsetMM+paperHeight*1000-15)+"mm";
 				div.className="xPosBottom";
@@ -292,13 +293,13 @@ var nImgHorizontal;
                   gridCanvasCtx.stroke();
 
 				var div = document.createElement("div");
-				div.innerText = yUTMPos/1000;
+				div.innerHTML = yUTMPos/1000;
 				div.style.top=(0-y/resolution)*1000+"mm";
 				div.style.left = (5-xOffsetMM)+"mm"
 				div.className="yPosLeft";
 				$("#container").append(div);
 				var div = document.createElement("div");
-				div.innerText = yUTMPos/1000;
+				div.innerHTML = yUTMPos/1000;
 				div.style.top=(0-y/resolution)*1000+"mm";
 				div.style.left = (paperWidth*1000-15-xOffsetMM)+"mm"
 				div.className="yPosRight";

@@ -4,9 +4,20 @@
         <meta charset="UTF-8">
         <title>Kartutskrift</title>
         <script src="jquery-2.1.1.js"></script>
+        <link rel="stylesheet" href="jquery-ui-1.12.1.custom/jquery-ui.css">
+  		<script src="jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+        <script src="imagesloaded.pkgd.min.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+    <div id="dialog" style="display:none; text-align:center" title="Ønsker du å donere?">
+			  <p>Takk for at du bruker siden min! Har du lyst til å donere til min veldedighetskampanje?
+			  </p><p>
+			  <a href="http://www.AgainstMalaria.com/Fundraiser.aspx?FundraiserID=7545">
+<img src="http://www.AgainstMalaria.com/downloads/badges/AM_Badge1_SponsorNow_en.png" style="border: 0px" alt="Against Malaria" /></a>
+</p>
+			  <p> Hvert år dør en halv million av Malaria og 400 millioner blir syke. Myggnettingene distribuert av Against Malaria Foundation koster 20 kroner og beskytter i snitt to personer i 3-4 år. Det betyr at du kan beskytte rundt 20 stykker for prisen av et papirkart.</p>
+  	</div>
 		<div id="paper" style="position:absolute;top:0;left:0;overflow: hidden;width:210mm;height:297mm;">
 
         <div id="container" style="position:absolute;top:0;left:0;width:10000mm;height:10000mm">
@@ -428,8 +439,21 @@ var nImgHorizontal;
 
 }
 
+// vanilla JS
+var imgLoad = imagesLoaded( "#container" );
+imgLoad.on( 'always', function( instance ) {
 
+  window.print();
+    setTimeout(function () {
+    	console.log('ALWAYS - all images have been loaded');
+    	$( "#dialog" ).dialog({
+width:"500px"
+    	});
+    }, 100);
 });
+});
+
+
 
 	</script>
     <script>
@@ -442,5 +466,6 @@ var nImgHorizontal;
          ga('send', 'pageview');
 
         </script>
+
     </body>
 </html>

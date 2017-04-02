@@ -49,10 +49,11 @@
 <tr>
     <td>Kart:</td>
     <td class="alignRight">
-        <select name="map">
+        <select name="map" id="map">
         <option value="toporaster3">Topografisk</option>
         <option value="topo2">Skjermkart</option>
         <option value="sjo_hovedkart2">Sjøkart</option>
+        <option value="kystkart">Kystkart (beta)</option>
         </select> </td>
 </tr>
 <tr>
@@ -148,8 +149,8 @@
         <input class="button panel-title" type="submit" value="3. Gi meg kartet!">
     </div>
     </form>
-<div class="sidebar-row">
-Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.
+<div class="sidebar-row" id="inputInfo">
+    <p>Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.</p>
 </div>
 <div id="amf">
 <div class="sidebar-row">
@@ -377,6 +378,16 @@ function updateUTM(){
 
 addMap(new OpenLayers.LonLat($('#eastCenter')[0].value,$('#northCenter')[0].value),$('#previewZoom')[0].value);
 changePaper($('#paperSize')[0].value);
+
+$("#map").on("change", function () {
+    var infoDiv = document.getElementById("inputInfo");
+    infoDiv.innerHTML = "";
+    if (this.value == "kystkart") {
+         infoDiv.innerHTML = "<h3>Om kystkartet</h3><p><strong>NB! Denne funksjonen er under utvikling - feil og unøyaktigheter kan forekomme!</strong> Kystkart er et forsøk på å lage et bedre kart for deg som ferdes nært kysten, for eksempel i kajakk. Dette gjøres ved å kombinere data fra flere offentlige kilder i samme kart. Send forslag og tilbakemeldinger til <a href=\"mailto:&#112;&#111;&#115;&#116;&#064;&#107;&#097;&#114;&#116;&#117;&#116;&#115;&#107;&#114;&#105;&#102;&#116;&#046;&#110;&#111;\">&#112;&#111;&#115;&#116;&#064;&#107;&#097;&#114;&#116;&#117;&#116;&#115;&#107;&#114;&#105;&#102;&#116;&#046;&#110;&#111;</a></p><p>Vær oppmerksom på at i motsettning til sjøkart så har kartet ikke merket sjøkabler og fyrlykters lyskarakter vises heller ikke. Trenger du dette bør du vurdere å bruke andre kartkilder i tillegg.</p><p>Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.</p>";
+         } else {
+         infoDiv.innerHTML = "<p>Det er 1 km mellom hver linje i rutenettet og ekvidistansen er 20m.</p>";
+         }
+});
 
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

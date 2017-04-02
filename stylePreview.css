@@ -5,6 +5,7 @@ body {
     color: #333;
     background-color: #fff;
     margin: 0;
+    overflow: hidden;
 }
 
 .panel-heading {
@@ -65,6 +66,7 @@ body {
     height: 100%;
     max-width: 100%;
     float: left;
+    overflow: auto;
 }
 
 .sidebar-wrapper {

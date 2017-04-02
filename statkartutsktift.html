@@ -118,17 +118,23 @@ var nImgHorizontal;
 				map = QueryString['map'];
 			}
 
-                  var mapName;
-            if (map == "toporaster3")
-                  mapName = "toporaster";
-            else if (map == "sjo_hovedkart2"){
-                  mapName = "hoved";
+            var layer;
+            var mapName = map;
+            if (map == "toporaster3") {
+                  layer = "toporaster";
+            } else if (map == "sjo_hovedkart2") {
+                  layer = "hoved";
                   map = "sjokartraster";
                   $('#Copyright')[0].innerHTML = "Kartet er ikke beregnet for navigasjon.<br/>" + $('#Copyright')[0].innerHTML;
-                  }
-            else if (map == "topo2"){
+            } else if (map == "topo2"){
                   mapName = "topo2_WMS";
-                  }
+            } else if (map == "topo2"){
+                  layer = "topo2_WMS";
+            } else if (map == "kystkart"){
+                  layer = "toporaster";
+                  mapName = "toporaster3";
+                  $('#Copyright')[0].innerHTML = "Kartet er ikke beregnet for navigasjon.<br/>" + $('#Copyright')[0].innerHTML;
+            }
 
 			var xLUtmWms = 0;
 			var yLUtmWms = 0;
@@ -342,13 +348,39 @@ var nImgHorizontal;
 
 
 
-
-					img.src = "http://openwms.statkart.no/skwms1/wms."+map+"?request=GetMap&LAYERS="+mapName+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM*dyScale)+","+(xL+dxUTM*dxScale)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx*dxScale+"&HEIGHT="+imgHeightPx*dyScale+"&FORMAT=image/png";
+					var img = document.createElement("img");
+					div.appendChild(img)
+					img.src = "http://openwms.statkart.no/skwms1/wms."+mapName+"?request=GetMap&LAYERS="+layer+"&VERSION=1.0.0&BBOX="+xL+","+(yL-dyUTM*dyScale)+","+(xL+dxUTM*dxScale)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx*dxScale+"&HEIGHT="+imgHeightPx*dyScale+"&FORMAT=image/png";
 					img.style.width = imgWitdhMM*dxScale+"mm";
 					img.style.height = imgHeighthMM*dyScale+"mm";
 					img.style.position ="absolute";
 					img.style.top=0;
 					img.style.left=0;
+
+                    if (map == "kystkart") {
+                      $('#Copyright')[0].innerText += ", Kystverket"
+                        var img = document.createElement("img");
+                        div.appendChild(img)
+                        img.src = "https://nfs.kystverket.no/arcgis/services/nfs/NFSSistOperativ/MapServer/WmsServer?LAYERS=4,6,9,10,14,17&TRANSPARENT=TRUE&FORMAT=image/png&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetMap&STYLES=&BBOX="+xL+","+(yL-dyUTM*dyScale)+","+(xL+dxUTM*dxScale)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx*dxScale+"&HEIGHT="+imgHeightPx*dyScale;
+                        img.style.width = imgWitdhMM*dxScale+"mm";
+                        img.style.height = imgHeighthMM*dyScale+"mm";
+                        img.style.position ="absolute";
+                        img.style.top=0;
+                        img.style.left=0;
+
+                        // Lights and light sectors takes up a bit space and might 
+                        // overlay useful information on other layers so we add them
+                        // with some transparency
+                        var img = document.createElement("img");
+                        div.appendChild(img)
+                        img.src = "https://nfs.kystverket.no/arcgis/services/nfs/NFSSistOperativ/MapServer/WmsServer?LAYERS=16,18&TRANSPARENT=TRUE&FORMAT=image/png&VERSION=1.1.1&SERVICE=WMS&REQUEST=GetMap&STYLES=&BBOX="+xL+","+(yL-dyUTM*dyScale)+","+(xL+dxUTM*dxScale)+","+(yL)+"&SRS=EPSG:326"+UTM+"&WIDTH="+imgWidthPx*dxScale+"&HEIGHT="+imgHeightPx*dyScale;
+                        img.style.width = imgWitdhMM*dxScale+"mm";
+                        img.style.height = imgHeighthMM*dyScale+"mm";
+                        img.style.position ="absolute";
+                        img.style.top=0;
+                        img.style.left=0;
+                        img.style.opacity = 0.7;
+                    }
 
 					if (shadow){
 						var img = document.createElement("img");
